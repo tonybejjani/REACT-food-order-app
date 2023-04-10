@@ -9,6 +9,10 @@ const Cart = (props) => {
       ))}
     </ul>
   );
+
+  const modalVisibiltyHandler = () => {
+    props.setModalVisibilty(false);
+  };
   return (
     <div>
       {cartItems}
@@ -17,7 +21,12 @@ const Cart = (props) => {
         <span>35.62</span>
       </div>
       <div className={classes.actions}>
-        <button className={classes['button--alt']}>Close</button>
+        <button
+          className={classes['button--alt']}
+          onClick={modalVisibiltyHandler}
+        >
+          Close
+        </button>
         <button className={classes.button}>Order</button>
       </div>
     </div>
