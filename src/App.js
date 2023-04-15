@@ -1,9 +1,10 @@
 /** @format */
-import { React, Fragment, useState } from 'react';
+import { React, useState } from 'react';
 
 import Header from './components/Layout/Header';
 import Meals from './components/Meals/Meals';
 import Cart from './components/Cart/Cart';
+import CartProvider from './store/cartProvider';
 
 function App() {
   const [cartIsShown, setCartIsShown] = useState(false);
@@ -16,14 +17,37 @@ function App() {
     setCartIsShown(false);
   };
   return (
-    <Fragment>
+    <CartProvider>
       {cartIsShown && <Cart onHideCart={hideCartHandler} />}
       <Header onShowCart={showCartHandler} />
       <main>
         <Meals />
       </main>
-    </Fragment>
+    </CartProvider>
   );
 }
 
 export default App;
+// import React, { useState } from 'react';
+
+// import FunctionContextComponent from './FunctionContextComponent';
+
+// export const ThemeContext = React.createContext();
+
+// function App() {
+//   const [darkTheme, setDarkTheme] = useState(true);
+
+//   function toggleTheme() {
+//     setDarkTheme((prevDarkTheme) => !prevDarkTheme);
+//   }
+
+//   return (
+//     <>
+//       <ThemeContext.Provider value={darkTheme}>
+//         <button onClick={toggleTheme}>Toggle Theme</button>
+//         <FunctionContextComponent />
+//       </ThemeContext.Provider>
+//     </>
+//   );
+// }
+//
