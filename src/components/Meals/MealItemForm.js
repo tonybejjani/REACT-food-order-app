@@ -10,13 +10,16 @@ const MealItemForm = (props) => {
 
   const AddItemToCart = (event) => {
     event.preventDefault();
+
     CartCtx.addItem({
+      // use ref
       amount: Number(document.getElementById(`amount_${props.id}`).value),
+      price: props.price,
     });
   };
 
   return (
-    <form className={classes.form}>
+    <form className={classes.form} onSubmit={AddItemToCart}>
       <Input
         label="Amount"
         input={{
@@ -28,7 +31,7 @@ const MealItemForm = (props) => {
           defaultValue: '1',
         }}
       />
-      <button onClick={AddItemToCart}>+ Add</button>
+      <button>+ Add</button>
     </form>
   );
 };
