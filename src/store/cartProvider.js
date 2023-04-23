@@ -5,11 +5,11 @@ import CartContext from './cart-context';
 
 const CartProvider = (props) => {
   const addItemToCartHandler = (item) => {
-    dispatch({ type: ACTIONS.ADD_CART_ITEM, payload: item });
+    dispatch({ type: ACTIONS.ADD_CART_ITEM, item });
   };
 
   const removeItemFromCartHandler = (id) => {
-    dispatch({ type: ACTIONS.REMOVE_CART_ITEM, payload: id });
+    dispatch({ type: ACTIONS.REMOVE_CART_ITEM, id });
   };
 
   const ACTIONS = {
@@ -20,13 +20,40 @@ const CartProvider = (props) => {
   const reduce = (state, action) => {
     switch (action.type) {
       case ACTIONS.ADD_CART_ITEM:
-        const updatedItems = state.items.concat(action.payload);
+        let updatedItem;
+        let updatedItems = [...state.items];
+
+        //retrieve index of the item already available in updated Index
+        const itemIndex = updatedItems.findIndex(
+          (item) => item.id === action.item.id
+        );
+
+        const existingItem = updatedItems[itemIndex];
+        console.log(existingItem);
+
+        // locate index of item and update amount
+        // else just add the item to array of updated items
+        if (existingItem) {
+          updatedItem = {
+            ...existingItem,
+            amount: existingItem.amount + action.item.amount,
+          };
+
+          updatedItems[itemIndex] = updatedItem;
+        } else {
+          updatedItems = [...state.items, action.item];
+        }
+
         const updatedTotalAmount =
-          state.totalAmount + action.payload.price * action.payload.amount;
+          state.totalAmount + action.item.price * action.item.amount;
+
         return {
           items: updatedItems,
           totalAmount: updatedTotalAmount,
+          addItem: addItemToCartHandler,
+          removeItem: removeItemFromCartHandler,
         };
+
       default:
         return state;
     }
@@ -38,8 +65,6 @@ const CartProvider = (props) => {
     addItem: addItemToCartHandler,
     removeItem: removeItemFromCartHandler,
   });
-
-  console.log(cartContext);
 
   return (
     <CartContext.Provider value={cartContext}>
