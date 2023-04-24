@@ -8,10 +8,10 @@ import CartContext from '../../store/cart-context';
 
 const HeaderCartButton = (props) => {
   const cartCtx = useContext(CartContext);
-
-  const numberOfCartContext = cartCtx.items.reduce((currNum, item) => {
-    return currNum + item.amount;
-  }, 0);
+  const numberOfCartContext = cartCtx.items.reduce(
+    (currNum, item) => currNum + item.amount,
+    0
+  );
 
   return (
     <Fragment>

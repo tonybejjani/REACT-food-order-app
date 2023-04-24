@@ -18,21 +18,20 @@ const CartProvider = (props) => {
   };
 
   const reduce = (state, action) => {
+    let updatedItem;
+    let updatedItems = [...state.items];
+    //retrieve index of the item already available in updated Index
+
     switch (action.type) {
       case ACTIONS.ADD_CART_ITEM:
-        let updatedItem;
-        let updatedItems = [...state.items];
-
-        //retrieve index of the item already available in updated Index
-        const itemIndex = updatedItems.findIndex(
-          (item) => item.id === action.item.id
-        );
-
-        const existingItem = updatedItems[itemIndex];
-        console.log(existingItem);
-
         // locate index of item and update amount
         // else just add the item to array of updated items
+
+        const itemIndex = updatedItems.findIndex((item) => {
+          return item.id === action.item.id;
+        });
+        let existingItem = updatedItems[itemIndex];
+
         if (existingItem) {
           updatedItem = {
             ...existingItem,
@@ -48,10 +47,50 @@ const CartProvider = (props) => {
           state.totalAmount + action.item.price * action.item.amount;
 
         return {
+          ...state,
           items: updatedItems,
           totalAmount: updatedTotalAmount,
-          addItem: addItemToCartHandler,
-          removeItem: removeItemFromCartHandler,
+        };
+
+      case ACTIONS.REMOVE_CART_ITEM:
+        // get item to decrement index in items array
+        const itemToDecrementIndex = updatedItems.findIndex((item) => {
+          return item.id === action.id;
+        });
+
+        let itemToDecrement = updatedItems[itemToDecrementIndex];
+
+        // on decrement, update total amount
+        let remainingTotalAmount = Math.abs(
+          state.totalAmount - itemToDecrement.price
+        );
+
+        let remainingItems;
+
+        // get  index of item to remove and decrement amount
+        const itemToDecrementAmount = itemToDecrement.amount - 1;
+
+        // if amount left is 0, remove item from Cart
+        if (itemToDecrementAmount === 0) {
+          remainingItems = updatedItems.filter((item) => {
+            return item.id !== action.id;
+          });
+
+          // if amount left > 0, decrement amount
+        } else {
+          remainingItems = updatedItems.map((item) => {
+            if (item.id === action.id) {
+              item.amount = item.amount - 1;
+              return item;
+            }
+            return item;
+          });
+        }
+
+        return {
+          ...state,
+          items: remainingItems,
+          totalAmount: remainingTotalAmount,
         };
 
       default:
